@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#f7efe3" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Hanbat-eats" />
+    <title>한밭이츠</title>
+    <script>
+      if (new URLSearchParams(location.search).has("demo")) {
+        document.documentElement.classList.add("demo-mode");
+      }
+    </script>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png" />
+    <link rel="stylesheet" href="./styles.css?v=76" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="screen screen-login is-active" id="loginScreen">
+        <div class="login-content">
+          <div class="login-brand">
+            <img
+              class="login-logo"
+              src="./assets/hanbat-eats-logo-clean.png"
+              alt=""
+              aria-hidden="true"
+            />
+            <h1 class="brand-wordmark" aria-label="Hanbat-eats">Hanbat-eats</h1>
+          </div>
+
+          <div class="phone-login-panel">
+            <form class="auth-step is-active" id="phoneForm">
+              <label for="phoneInput">휴대폰 번호</label>
+              <input
+                id="phoneInput"
+                type="tel"
+                inputmode="numeric"
+                autocomplete="tel"
+                placeholder="010 0000 0000"
+                maxlength="13"
+                required
+              />
+              <p class="form-hint" id="formHint" role="alert"></p>
+              <button class="phone-submit-button" type="submit">계속</button>
+            </form>
+
+            <form class="auth-step" id="codeForm">
+              <label for="codeInput">인증번호</label>
+              <input
+                id="codeInput"
+                type="tel"
+                inputmode="numeric"
+                autocomplete="one-time-code"
+                placeholder="000000"
+                maxlength="6"
+                required
+              />
+              <p class="form-hint" id="codeHint" role="alert"></p>
+              <button class="phone-submit-button" type="submit">확인</button>
+              <button class="text-button" id="backToPhoneButton" type="button">번호 다시 입력</button>
+            </form>
+
+            <form class="auth-step" id="signupForm">
+              <label for="nicknameInput">닉네임</label>
+              <input
+                id="nicknameInput"
+                type="text"
+                autocomplete="nickname"
+                placeholder="예: 희훈"
+                maxlength="12"
+                required
+              />
+              <p class="form-hint" id="signupHint" role="alert"></p>
+              <button class="phone-submit-button" type="submit">다음</button>
+            </form>
+
+            <form class="auth-step" id="accountForm">
+              <label for="bankSelectButton">은행</label>
+              <input id="bankInput" type="hidden" />
+              <div class="bank-select-wrap">
+                <button
+                  class="bank-select-button"
+                  id="bankSelectButton"
+                  type="button"
+                  aria-haspopup="listbox"
+                  aria-expanded="false"
+                >
+                  <span id="bankSelectText">은행 선택</span>
+                  <span class="bank-select-chevron" aria-hidden="true"></span>
+                </button>
+                <div class="bank-option-list" id="bankOptionList" role="listbox" aria-label="은행">
+                  <button type="button" role="option" data-bank="카카오뱅크">카카오뱅크</button>
+                  <button type="button" role="option" data-bank="토스뱅크">토스뱅크</button>
+                  <button type="button" role="option" data-bank="KB국민은행">KB국민은행</button>
+                  <button type="button" role="option" data-bank="신한은행">신한은행</button>
+                  <button type="button" role="option" data-bank="우리은행">우리은행</button>
+                  <button type="button" role="option" data-bank="하나은행">하나은행</button>
+                  <button type="button" role="option" data-bank="NH농협은행">NH농협은행</button>
+                  <button type="button" role="option" data-bank="IBK기업은행">IBK기업은행</button>
+                  <button type="button" role="option" data-bank="기타">기타</button>
+                </div>
+              </div>
+
+              <label for="accountNumberInput">계좌번호</label>
+              <input
+                id="accountNumberInput"
+                type="tel"
+                inputmode="numeric"
+                autocomplete="off"
+                placeholder="숫자만 입력"
+                maxlength="20"
+                required
+              />
+
+              <label for="accountHolderInput">예금주</label>
+              <input
+                id="accountHolderInput"
+                type="text"
+                autocomplete="name"
+                placeholder="예: 정희훈"
+                maxlength="20"
+                required
+              />
+              <p class="form-hint" id="accountHint" role="alert"></p>
+              <button class="phone-submit-button" type="submit">계좌 등록하고 시작</button>
+              <button class="text-button" id="backToNicknameButton" type="button">닉네임 다시 입력</button>
+            </form>
+
+            <p class="auth-note">처음 인증하면 다음부터 자동 로그인됩니다.</p>
+          </div>
+
+          <p class="login-footer">© Hanbat-eats</p>
+        </div>
+      </section>
+
+      <section class="screen screen-home map-home" id="homeScreen" data-active-tab="map" data-room-section="mine">
+        <div class="map-canvas" id="mapCanvas" aria-label="내 주변 공동 주문 지도">
+          <div class="kakao-map" id="kakaoMap" aria-label="카카오 지도"></div>
+          <span class="map-road map-road-main"></span>
+          <span class="map-road map-road-sub"></span>
+          <span class="map-road map-road-cross"></span>
+          <span class="map-block map-block-a"></span>
+          <span class="map-block map-block-b"></span>
+          <span class="map-block map-block-c"></span>
+          <div class="radius-circle" id="radiusCircle" aria-label="내 위치 반경 100미터"></div>
+          <div class="room-pin-layer" id="mapRoomsLayer"></div>
+          <div class="user-marker" aria-label="내 위치">
+            <span></span>
+          </div>
+        </div>
+        <div class="map-room-popup" id="mapRoomPopup" aria-live="polite"></div>
+
+        <header class="map-topbar">
+          <div class="radius-control" id="radiusControl" aria-label="검색 반경">
+            <button class="is-selected" type="button" data-radius="100">100m</button>
+            <button type="button" data-radius="200">200m</button>
+            <button type="button" data-radius="300">300m</button>
+          </div>
+        </header>
+
+        <button class="recenter-button" id="locateButton" type="button" aria-label="내 위치로 돌아가기">
+          <span aria-hidden="true"></span>
+        </button>
+        <button class="create-room-button floating-create-button" type="button" aria-label="방 만들기">
+          <span aria-hidden="true"></span>
+        </button>
+
+        <div class="room-sheet-backdrop" id="createRoomBackdrop"></div>
+        <section class="create-room-sheet" id="createRoomSheet" aria-hidden="true" aria-label="방 만들기">
+          <span class="sheet-handle" aria-hidden="true"></span>
+          <div class="sheet-header">
+            <div>
+              <span>새 공동 주문</span>
+              <strong>방 만들기</strong>
+            </div>
+            <button class="sheet-close-button" id="closeCreateRoomButton" type="button" aria-label="닫기">×</button>
+          </div>
+
+          <form class="create-room-form" id="createRoomForm" novalidate>
+            <label for="platformInput">
+              <span class="field-label">배달 플랫폼</span>
+              <select id="platformInput" required>
+                <option value="baemin">배달의민족</option>
+                <option value="yogiyo">요기요</option>
+                <option value="coupang">쿠팡이츠</option>
+                <option value="other">기타</option>
+              </select>
+            </label>
+
+            <label for="storeNameInput">
+              <span class="field-label">상호명</span>
+              <input id="storeNameInput" type="text" placeholder="예: 맘스터치 한밭대점" maxlength="40" required />
+              <span class="field-help">프랜차이즈는 지점명까지 써주세요.</span>
+            </label>
+
+            <div class="amount-grid">
+              <label for="minimumOrderAmountInput">
+                <span class="field-label">최소 주문 금액</span>
+                <input id="minimumOrderAmountInput" type="tel" inputmode="numeric" required />
+              </label>
+              <label for="deliveryFeeInput">
+                <span class="field-label">배달료</span>
+                <input id="deliveryFeeInput" type="tel" inputmode="numeric" required />
+              </label>
+            </div>
+
+            <label for="myOrderAmountInput">
+              <span class="field-label">내 주문 금액</span>
+              <input id="myOrderAmountInput" type="tel" inputmode="numeric" required />
+            </label>
+
+            <label for="orderTitleInput">
+              <span class="field-label">내 주문 메뉴</span>
+              <input id="orderTitleInput" type="text" maxlength="40" required />
+            </label>
+
+            <label for="shareLocationInput">
+              <span class="field-label">나눌 위치 설명</span>
+              <input id="shareLocationInput" type="text" placeholder="예: 학생회관 앞 벤치" maxlength="40" required />
+              <span class="field-help">방 목록에는 이 설명이 보이고, 지도에는 찍은 위치가 표시됩니다.</span>
+            </label>
+
+            <button class="location-select-button" id="openShareLocationPickerButton" type="button">
+              <span>지도 위치</span>
+              <strong id="shareLocationSummary">지도에서 찍기</strong>
+            </button>
+
+            <p class="form-hint create-room-hint" id="createRoomHint" role="alert"></p>
+            <button class="create-room-submit" type="submit">방 만들기</button>
+          </form>
+
+          <section class="share-location-screen" id="shareLocationScreen" aria-hidden="true">
+            <div class="share-location-header">
+              <button class="share-location-back" id="closeShareLocationPickerButton" type="button" aria-label="돌아가기">
+                <span aria-hidden="true"></span>
+              </button>
+              <strong>나눌 위치</strong>
+              <span class="share-location-header-spacer" aria-hidden="true"></span>
+            </div>
+            <div class="share-location-map" id="shareLocationMap" aria-label="나눌 위치 지도"></div>
+            <button class="share-location-confirm" id="confirmShareLocationButton" type="button" disabled>이 위치로 정하기</button>
+          </section>
+        </section>
+
+        <div class="join-room-backdrop" id="joinRoomBackdrop"></div>
+        <section class="join-room-sheet" id="joinRoomSheet" aria-hidden="true" aria-label="방 입장">
+          <span class="sheet-handle" aria-hidden="true"></span>
+          <div class="sheet-header">
+            <div>
+              <span>공동 주문 참여</span>
+              <strong>방 입장</strong>
+            </div>
+            <button class="sheet-close-button" id="closeJoinRoomButton" type="button" aria-label="닫기">×</button>
+          </div>
+
+          <div class="join-room-summary" aria-live="polite">
+            <span id="joinRoomPlatform">배달앱</span>
+            <strong id="joinRoomStoreName">상호명</strong>
+            <p id="joinRoomRemaining">최소 주문까지 남은 금액을 확인 중입니다.</p>
+          </div>
+
+          <form class="join-room-form" id="joinRoomForm">
+            <label for="joinOrderTitleInput">
+              <span class="field-label">내 주문 메뉴</span>
+              <input id="joinOrderTitleInput" type="text" placeholder="예: 싸이버거 세트" maxlength="40" required />
+            </label>
+            <label for="joinOrderAmountInput">
+              <span class="field-label">내 주문 금액</span>
+              <input id="joinOrderAmountInput" type="tel" inputmode="numeric" placeholder="예: 8000" required />
+            </label>
+
+            <p class="form-hint join-room-hint" id="joinRoomHint" role="alert"></p>
+            <button class="join-room-submit" type="submit">입장하기</button>
+          </form>
+        </section>
+
+        <section class="home-panel home-rooms-panel" aria-label="방 목록">
+          <div class="panel-header">
+            <span>방 목록</span>
+          </div>
+          <div class="room-section-tabs" aria-label="방 목록 구분">
+            <button class="is-selected" type="button" data-room-section="mine">내 방</button>
+            <button type="button" data-room-section="public">방 목록</button>
+          </div>
+          <div class="room-list compact-room-list" id="roomList"></div>
+          <div class="room-list compact-room-list my-room-list" id="myRoomList"></div>
+        </section>
+
+        <section class="my-room-detail-screen" id="myRoomDetailScreen" aria-hidden="true">
+          <div class="my-room-detail-header">
+            <button class="my-room-back-button" id="closeMyRoomDetailButton" type="button" aria-label="돌아가기">
+              <span aria-hidden="true"></span>
+            </button>
+            <strong id="myRoomChatTitle">채팅</strong>
+            <span aria-hidden="true"></span>
+          </div>
+
+          <div class="my-room-detail-content">
+            <section class="my-room-overview">
+              <span id="myRoomDetailStatus">모집 중</span>
+              <h2 id="myRoomDetailStore">상호명</h2>
+              <p id="myRoomDetailMeta">방 정보를 불러오는 중입니다.</p>
+              <div class="order-progress" aria-label="최소 주문 금액 진행률">
+                <span id="myRoomDetailProgress"></span>
+              </div>
+              <div class="order-progress-label">
+                <span id="myRoomDetailCurrent">0원</span>
+                <span id="myRoomDetailMinimum">0원</span>
+              </div>
+              <div class="my-room-detail-actions" id="myRoomDetailActions"></div>
+            </section>
+
+            <section class="my-room-section">
+              <div class="my-room-section-title">
+                <span>참여자 주문</span>
+                <div class="order-title-actions">
+                  <button class="edit-order-chip" id="myRoomOrderEditButton" type="button" hidden>메뉴변경</button>
+                  <strong id="myRoomOrderCount">0명</strong>
+                </div>
+              </div>
+              <div class="my-room-order-list" id="myRoomOrderList"></div>
+            </section>
+
+            <section class="my-room-section chat-section">
+              <div class="my-room-section-title">
+                <span>채팅</span>
+              </div>
+              <div class="my-room-chat-list" id="myRoomChatList"></div>
+              <form class="my-room-chat-form" id="myRoomChatForm">
+                <input id="myRoomChatInput" type="text" placeholder="메시지 입력" maxlength="300" />
+                <button type="submit">전송</button>
+              </form>
+              <p class="form-hint my-room-chat-hint" id="myRoomChatHint" role="alert"></p>
+            </section>
+          </div>
+        </section>
+
+        <section class="home-panel home-settings-panel" aria-label="설정">
+          <div class="panel-header">
+            <span>설정</span>
+          </div>
+          <div class="settings-list">
+            <button class="settings-profile-card" id="settingsProfileCard" type="button" aria-label="프로필 관리">
+              <div class="profile-avatar" id="settingsProfileInitial" aria-hidden="true"></div>
+              <div class="profile-info">
+                <strong id="settingsNickname">Hanbat-eats</strong>
+                <span id="settingsPhone">휴대폰 번호 확인 중</span>
+              </div>
+              <strong class="settings-chevron profile-card-chevron" aria-hidden="true">›</strong>
+            </button>
+
+            <section class="settings-wallet-card" aria-label="충전 잔액">
+              <div class="wallet-copy">
+                <strong id="settingsStrawberryBalance">0원</strong>
+              </div>
+              <button class="wallet-charge-button" id="openWalletChargeButton" type="button">충전</button>
+            </section>
+
+            <p class="settings-section-title">알림</p>
+            <label class="settings-row settings-toggle-row">
+              <span>방 알림</span>
+              <input type="checkbox" checked />
+            </label>
+            <label class="settings-row settings-toggle-row">
+              <span>마감 임박 알림</span>
+              <input type="checkbox" checked />
+            </label>
+            <label class="settings-row settings-toggle-row">
+              <span>이벤트 알림</span>
+              <input type="checkbox" />
+            </label>
+            <button class="settings-row settings-action-row" type="button" id="notificationTestButton">
+              <span>알림 테스트</span>
+              <strong id="notificationStatus">확인</strong>
+            </button>
+
+            <p class="settings-section-title">서비스</p>
+            <button class="settings-row settings-action-row" type="button">
+              <span>내 위치 관리</span>
+              <strong class="settings-chevron">›</strong>
+            </button>
+            <button class="settings-row settings-action-row" type="button">
+              <span>결제 수단 관리</span>
+              <strong class="settings-chevron">›</strong>
+            </button>
+            <div class="settings-row">
+              <span>정산 계좌</span>
+              <strong id="settingsPayoutAccount">등록 필요</strong>
+            </div>
+            <button class="settings-row settings-action-row" type="button">
+              <span>공지사항</span>
+              <strong class="settings-chevron">›</strong>
+            </button>
+
+            <p class="settings-section-title">고객지원</p>
+            <button class="settings-row settings-action-row" type="button">
+              <span>고객센터</span>
+              <strong class="settings-chevron">›</strong>
+            </button>
+            <button class="settings-row settings-action-row" type="button">
+              <span>약관 및 개인정보 처리방침</span>
+              <strong class="settings-chevron">›</strong>
+            </button>
+            <div class="settings-row">
+              <span>앱 버전</span>
+              <strong>0.1.0</strong>
+            </div>
+
+            <p class="settings-section-title">계정</p>
+            <button class="settings-logout-button" type="button" id="logoutButton">로그아웃</button>
+          </div>
+        </section>
+
+        <section class="home-panel home-chat-panel" aria-label="채팅 목록">
+          <div class="panel-header">
+            <span>채팅 목록</span>
+          </div>
+          <div class="chat-room-list" id="chatRoomList"></div>
+        </section>
+
+        <nav class="bottom-nav app-bottom-tabs" aria-label="하단 탭">
+          <button class="is-selected" type="button" data-tab="map">맵</button>
+          <button type="button" data-tab="rooms">방 목록</button>
+          <button type="button" data-tab="chat">채팅</button>
+          <button type="button" data-tab="settings">설정</button>
+        </nav>
+
+        <section class="payment-consent-dialog" id="paymentConsentDialog" aria-hidden="true" role="dialog" aria-modal="true">
+          <div class="payment-consent-card">
+            <span>결제 요청</span>
+            <strong id="paymentConsentStoreName">방장이 결제를 요청했습니다.</strong>
+            <p id="paymentConsentMessage">메뉴와 금액을 확인했다면 동의해 주세요.</p>
+            <div class="payment-breakdown" id="paymentConsentBreakdown" hidden></div>
+            <div class="payment-consent-actions">
+              <button class="payment-consent-decline" id="paymentConsentDeclineButton" type="button">아니오</button>
+              <button class="payment-consent-accept" id="paymentConsentAcceptButton" type="button">예</button>
+            </div>
+          </div>
+        </section>
+      </section>
+      <section class="app-confirm-dialog" id="appConfirmDialog" aria-hidden="true" role="dialog" aria-modal="true">
+        <div class="app-confirm-card">
+          <span id="appConfirmEyebrow">확인</span>
+          <strong id="appConfirmTitle">진행할까요?</strong>
+          <p id="appConfirmMessage"></p>
+          <div class="app-confirm-actions">
+            <button class="app-confirm-cancel" id="appConfirmCancelButton" type="button">취소</button>
+            <button class="app-confirm-ok" id="appConfirmOkButton" type="button">확인</button>
+          </div>
+        </div>
+      </section>
+      <section class="order-edit-dialog" id="orderEditDialog" aria-hidden="true" role="dialog" aria-modal="true">
+        <form class="order-edit-card" id="orderEditForm">
+          <span>내 주문</span>
+          <strong>메뉴 변경</strong>
+          <label for="editOrderTitleInput">
+            <span>내 주문 메뉴</span>
+            <input id="editOrderTitleInput" type="text" placeholder="예: 싸이버거 세트" maxlength="40" required />
+          </label>
+          <label for="editOrderAmountInput">
+            <span>내 주문 금액</span>
+            <input id="editOrderAmountInput" type="tel" inputmode="numeric" placeholder="예: 8000" required />
+          </label>
+          <p class="form-hint" id="orderEditHint" role="alert"></p>
+          <div class="order-edit-actions">
+            <button class="order-edit-cancel" id="orderEditCancelButton" type="button">취소</button>
+            <button class="order-edit-save" type="submit">변경하기</button>
+          </div>
+        </form>
+      </section>
+      <section class="wallet-charge-dialog" id="walletChargeDialog" aria-hidden="true" role="dialog" aria-modal="true">
+        <form class="wallet-charge-card" id="walletChargeForm">
+          <span>충전</span>
+          <strong>충전할 금액을 입력해 주세요.</strong>
+          <label for="walletChargeAmountInput">
+            <span>충전 금액</span>
+            <input id="walletChargeAmountInput" type="tel" inputmode="numeric" placeholder="예: 10000" required />
+          </label>
+          <p class="form-hint" id="walletChargeHint" role="alert"></p>
+          <div class="wallet-charge-actions">
+            <button class="wallet-charge-cancel" id="walletChargeCancelButton" type="button">취소</button>
+            <button class="wallet-charge-submit" type="submit">충전하기</button>
+          </div>
+        </form>
+      </section>
+      <section class="profile-edit-dialog" id="profileEditDialog" aria-hidden="true" role="dialog" aria-modal="true">
+        <form class="profile-edit-card" id="profileEditForm">
+          <span>프로필</span>
+          <strong>닉네임 수정</strong>
+          <label for="profileNicknameInput">
+            <span>닉네임</span>
+            <input id="profileNicknameInput" type="text" autocomplete="nickname" placeholder="예: 희훈" maxlength="12" required />
+          </label>
+          <p class="form-hint" id="profileEditHint" role="alert"></p>
+          <div class="profile-edit-actions">
+            <button class="profile-edit-cancel" id="profileEditCancelButton" type="button">취소</button>
+            <button class="profile-edit-save" type="submit">저장</button>
+          </div>
+        </form>
+      </section>
+      <div class="app-toast" id="appToast" role="status" aria-live="polite" hidden></div>
+    </main>
+
+    <script src="./config.js?v=4"></script>
+    <script src="./app.js?v=77"></script>
+  </body>
+</html>

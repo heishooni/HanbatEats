@@ -1,0 +1,40 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '4.1.1'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.hanbateats'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(25)
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+	runtimeOnly 'org.xerial:sqlite-jdbc:3.49.1.0'
+}
+
+// 정적 파일(index.html 등)과 data/ 폴더가 프로젝트 루트에 있으므로 bootRun도 루트에서 실행한다.
+tasks.named('bootRun') {
+	workingDir = rootProject.projectDir.parentFile
+}
+
+// sqlite-jdbc는 네이티브 라이브러리를 로드한다. Java 24+는 이를 허용하지 않으면 경고하고, 이후 버전에서는 막는다.
+tasks.named('bootJar') {
+	manifest {
+		attributes('Enable-Native-Access': 'ALL-UNNAMED')
+	}
+}
+
+tasks.named('bootRun') {
+	jvmArgs('--enable-native-access=ALL-UNNAMED')
+}

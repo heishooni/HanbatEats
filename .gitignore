@@ -1,0 +1,23 @@
+# 로컬 DB와 실행 중 생기는 파일 (개인정보 포함 가능)
+data/
+
+# 인증서 개인키 등 (공개 인증서 .pem/.cer만 커밋)
+certs/*.key
+certs/*.csr
+certs/*.srl
+
+# 개인 Kakao 키. config.example.js를 복사해서 만든다.
+config.js
+
+# 의존성·빌드 결과
+node_modules/
+backend/build/
+backend/.gradle/
+
+# 로그, OS·에디터 파일
+*.log
+*.pid
+screenlog.*
+.DS_Store
+.idea/
+.vscode/

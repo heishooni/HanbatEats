@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "none",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "strict": true,
+    "alwaysStrict": false,
+    "removeComments": false,
+    "rootDir": "src",
+    "outDir": "."
+  },
+  "files": ["src/app.ts", "src/types/api.d.ts", "src/types/kakao.d.ts"]
+}
